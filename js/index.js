@@ -192,7 +192,53 @@ $('#tam512').on('click', function (e) {
 
     for (let l = 0; l < img.height; l++) {
         for (let c = 0; c < img.width; c++) {
-            pixel = context.getImageData(c, l, 1, 1).data
+
+            /*  if (c % 2 == 0 && l % 2 == 0) pixel = context.getImageData(c, l, 1, 1).data
+             else if (c % 2 == 1 && l % 2 == 0 && c < img.width - 1) {
+                 pixel[0] = (context.getImageData(c - 1, l, 1, 1).data[0] + context.getImageData(c + 1, l, 1, 1).data[0]) / 2
+                 pixel[1] = (context.getImageData(c - 1, l, 1, 1).data[1] + context.getImageData(c + 1, l, 1, 1).data[1]) / 2
+                 pixel[2] = (context.getImageData(c - 1, l, 1, 1).data[2] + context.getImageData(c + 1, l, 1, 1).data[2]) / 2
+                 pixel[3] = (context.getImageData(c - 1, l, 1, 1).data[3] + context.getImageData(c + 1, l, 1, 1).data[3]) / 2
+             }
+             else if (c % 2 == 0 && l % 2 == 1 && l < img.height - 1) {
+                 pixel[0] = (context.getImageData(c, l - 1, 1, 1).data[0] + context.getImageData(c, l + 1, 1, 1).data[0]) / 2
+                 pixel[1] = (context.getImageData(c, l - 1, 1, 1).data[1] + context.getImageData(c, l + 1, 1, 1).data[1]) / 2
+                 pixel[2] = (context.getImageData(c, l - 1, 1, 1).data[2] + context.getImageData(c, l + 1, 1, 1).data[2]) / 2
+                 pixel[3] = (context.getImageData(c, l - 1, 1, 1).data[3] + context.getImageData(c, l + 1, 1, 1).data[3]) / 2
+             }
+             else if (c % 2 == 1 && l % 2 == 1) {
+                 pixel[0] = (
+                     context.getImageData(c - 1, l - 1, 1, 1).data[0] +
+                     context.getImageData(c - 1, l + 1, 1, 1).data[0] +
+                     context.getImageData(c + 1, l + 1, 1, 1).data[0] +
+                     context.getImageData(c - 1, l + 1, 1, 1).data[0]
+                 ) / 4
+                 pixel[1] = (
+                     context.getImageData(c - 1, l - 1, 1, 1).data[1] +
+                     context.getImageData(c - 1, l + 1, 1, 1).data[1] +
+                     context.getImageData(c + 1, l + 1, 1, 1).data[1] +
+                     context.getImageData(c - 1, l + 1, 1, 1).data[1]
+                 ) / 4
+                 pixel[2] = (
+                     context.getImageData(c - 1, l - 1, 1, 1).data[2] +
+                     context.getImageData(c - 1, l + 1, 1, 1).data[2] +
+                     context.getImageData(c + 1, l + 1, 1, 1).data[2] +
+                     context.getImageData(c - 1, l + 1, 1, 1).data[2]
+                 ) / 4
+                 pixel[3] = (
+                     context.getImageData(c - 1, l - 1, 1, 1).data[3] +
+                     context.getImageData(c - 1, l + 1, 1, 1).data[3] +
+                     context.getImageData(c + 1, l + 1, 1, 1).data[3] +
+                     context.getImageData(c - 1, l + 1, 1, 1).data[3]
+                 ) / 4
+                 
+             } */
+            pixel = context.getImageData(c + 1, l, 1, 1).data
+
+            /* map.data[posicao] = pixel;
+            map.data[posicao + 4] = pixel;
+            map.data[tamanhoLinha + posicao] = pixel;
+            map.data[tamanhoLinha + posicao + 4] = pixel; */
 
             // original
             map.data[posicao] = pixel[0];
@@ -219,12 +265,86 @@ $('#tam512').on('click', function (e) {
         }
         posicao += tamanhoLinha;
     }
-    console.log(map)
     context.putImageData(map, 0, 0)
 
     img.src = map.data
 
 })
+
+$('#tam1024').on('click', function (e) {
+    if (page != 'tam1024.html') {
+        page = 'tam1024.html'
+        carrega(page, 'root')
+    }
+
+    const img = document.getElementById('img');
+
+    //cria um canvas invisível
+    const canvas = document.getElementById('canvas')
+    canvas.width = img.width;
+    const context = canvas.getContext('2d');
+    //cria um canvas invisível
+
+    //desenha a imagem no canvas
+    context.drawImage(img, 0, 0);
+
+    //recupera vetor de cores
+    let map = context.getImageData(0, 0, img.width * 2, img.height * 2)
+
+    let pixel,
+        posicao = 0,
+        tamanhoLinha = img.width * 4 * 4;
+
+    for (let l = 0; l < img.height; l++) {
+        for (let c = 0; c < img.width; c++) {
+            pixel = context.getImageData(c, l, 1, 1).data
+
+            // original
+            map.data[posicao] = pixel[0];
+            map.data[posicao + 1] = pixel[0];
+            map.data[posicao + 2] = pixel[1];
+            map.data[posicao + 3] = pixel[1];
+            map.data[posicao + 4] = pixel[2];
+            map.data[posicao + 5] = pixel[2];
+            map.data[posicao + 6] = pixel[3];
+            map.data[posicao + 7] = pixel[3];
+
+            // direito
+            map.data[posicao + 8] = pixel[0];
+            map.data[posicao + 9] = pixel[0];
+            map.data[posicao + 10] = pixel[1];
+            map.data[posicao + 11] = pixel[1];
+            map.data[posicao + 12] = pixel[2];
+            map.data[posicao + 13] = pixel[2];
+            map.data[posicao + 14] = pixel[3];
+            map.data[posicao + 15] = pixel[3];
+            // embaixo
+            map.data[tamanhoLinha + posicao] = pixel[0];
+            map.data[tamanhoLinha + posicao + 1] = pixel[0];
+            map.data[tamanhoLinha + posicao + 2] = pixel[1];
+            map.data[tamanhoLinha + posicao + 3] = pixel[1];
+            map.data[tamanhoLinha + posicao + 4] = pixel[2];
+            map.data[tamanhoLinha + posicao + 5] = pixel[2];
+            map.data[tamanhoLinha + posicao + 6] = pixel[3];
+            map.data[tamanhoLinha + posicao + 7] = pixel[3];
+            // embaixo lado
+            map.data[tamanhoLinha + posicao + 8] = pixel[0];
+            map.data[tamanhoLinha + posicao + 9] = pixel[0];
+            map.data[tamanhoLinha + posicao + 10] = pixel[1];
+            map.data[tamanhoLinha + posicao + 11] = pixel[1];
+            map.data[tamanhoLinha + posicao + 12] = pixel[2];
+            map.data[tamanhoLinha + posicao + 13] = pixel[2];
+            map.data[tamanhoLinha + posicao + 14] = pixel[3];
+            map.data[tamanhoLinha + posicao + 15] = pixel[3];
+
+            posicao += 16;
+        }
+        posicao += tamanhoLinha;
+    }
+    context.putImageData(map, 0, 0)
+    img.src = map.data
+})
+
 $('#input').on('change', function (e) {
     carrega('imagem.html', 'root')
     setTimeout(function () {
