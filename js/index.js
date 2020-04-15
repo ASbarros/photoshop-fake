@@ -95,6 +95,42 @@ $('#loginverso').on('click', function (e) {
     img.src = map.data
 })
 
+$('#btn-potencia').on('click',function (e){
+    let gama = document.getElementById('input-potencia').value
+    if (gama != null || gama != "") {
+        if (page != 'imagem.html') {
+            page = 'imagem.html'
+            carrega(page, 'root')
+        } 
+        const img = document.getElementById('img');
+    
+        //cria um canvas invisível
+        const canvas = document.getElementById('canvas')
+        canvas.width = img.width;
+        const context = canvas.getContext('2d');
+        //cria um canvas invisível
+    
+        //desenha a imagem no canvas
+        context.drawImage(img, 0, 0);
+    
+        //recupera vetor de cores
+        var map = context.getImageData(0, 0, img.width, img.height);
+        gama = parseFloat(gama);
+        for (let i = 0; i < map.data.length; i += 4) {
+          map.data[i] = Math.pow(map.data[i] / 255, gama) * 256;
+          map.data[i + 1] =
+            Math.pow(map.data[i + 1] / 255, gama) * 256;
+          map.data[i + 2] =
+            Math.pow(map.data[i + 2] / 255, gama) * 256;
+        }
+        context.putImageData(map, 0, 0)
+    
+        img.src = map.data
+      } else {
+        alert("Desculpe gama formato incorreto!");
+      }
+})
+
 $('#input').on('change', function (e) {
     carrega('imagem.html', 'root')
     setTimeout(function () {
